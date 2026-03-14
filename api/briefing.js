@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'Missing environment variables.' });
+    return res.status(500).json({ error: 'Missing environment variables.', present: { SUPABASE_URL: !!SUPABASE_URL, SUPABASE_ANON_KEY: !!SUPABASE_ANON_KEY, ANTHROPIC_API_KEY: !!ANTHROPIC_API_KEY } });
   }
 
   const today = new Date().toISOString().split('T')[0];
@@ -51,7 +51,7 @@ Be conversational and specific to the numbers. Under 200 words total.`,
 
   const claudeData = await claude.json();
   const briefing = claudeData.content?.find(b => b.type === 'text')?.text;
-  if (!briefing) return res.status(500).json({ error: 'Claude did not return a briefing.' });
+  if (!briefing) return res.status(500).json({ error: 'Claude did not return a briefing.', debug: claudeData });
 
   return res.status(200).json({ briefing, date: record.recorded_date, payload: record.payload });
 }
