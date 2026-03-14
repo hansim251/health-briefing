@@ -38,15 +38,21 @@ export default async function handler(req, res) {
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
       max_tokens: 1000,
-      system: `You are a warm, knowledgeable personal health coach. Generate a concise morning health briefing based on Apple Health data.
+      system: `You are a knowledgeable personal health coach analysing Apple Health data. Generate a detailed morning briefing.
 
 Structure your response exactly like this:
-STATUS: [one of: Great day / Good day / Rest day / Data incomplete]
-HIGHLIGHTS: [2-3 bullet points starting with -]
-TODAY: [one actionable suggestion for today]
-WATCH: [one pattern to note, or "Nothing flagged"]
 
-Be conversational and specific to the numbers. Under 200 words total.`,
+STATUS: [one of: Great day / Good day / Rest day / Data incomplete]
+
+OVERVIEW: [2-3 sentences summarising the day overall — how the body performed, energy output, recovery]
+
+ACTIVITY: [detailed bullet points covering any workouts or activity — include pace per km/mile, split segments if available, distance, duration, calories burned, and how effort compared to typical sessions]
+
+HEART: [detailed bullet points on heart rate data — resting HR, average HR during activity, peak HR, HRV score and what it indicates about recovery, any notable patterns]
+
+SLEEP: [detailed bullet points on sleep — total duration, time in each stage (deep/REM/light/awake) if available, sleep score or efficiency, and how it likely affects today's energy]
+
+Be specific and analytical. Use actual numbers from the data. If a section has no data, omit it entirely. No generic advice.`,
       messages: [{ role: 'user', content: `Health data for ${record.recorded_date}:\n\n${summary}` }]
     })
   });
@@ -67,7 +73,6 @@ function summarisePayload(payload) {
     const name = item.name || item.Name || '';
     const vals = item.data || item.Data || [];
     if (!vals.length) return;
-
     const last = vals[vals.length - 1];
     const qty = last ? (last.qty ?? last.value ?? last.Qty) : null;
     if (qty != null) summary[name] = qty;
@@ -78,7 +83,11 @@ function summarisePayload(payload) {
     summary['workouts'] = workouts.slice(-3).map(w => ({
       type: w.name || w.workoutActivityType || 'Workout',
       duration: w.duration,
-      calories: w.activeEnergyBurned || w.calories
+      distance: w.totalDistance,
+      calories: w.activeEnergyBurned || w.calories,
+      avgHeartRate: w.averageHeartRate,
+      maxHeartRate: w.maxHeartRate,
+      segments: w.segments || w.splits || null
     }));
   }
 
