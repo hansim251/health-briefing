@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0f0e;
+    --surface: #161716;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0ede8;
+    --muted: rgba(240,237,232,0.45);
+    --accent: #c8f27a;
+    --accent-dim: rgba(200,242,122,0.12);
+    --red: #f27a7a;
+    --blue: #7ab8f2;
+    --amber: #f2c97a;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  header {
+    width: 100%;
+    max-width: 640px;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .header-date {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    margin-top: 6px;
+    line-height: 1.2;
+  }
+
+  .refresh-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+    white-space: nowrap;
+  }
+  .refresh-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+  .metrics-grid {
+    width: 100%;
+    max-width: 640px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .metric-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .metric-unit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 3px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 640px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    margin-bottom: 12px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .status-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+  }
+
+  .status-great { background: var(--accent-dim); color: var(--accent); }
+  .status-good { background: rgba(122,184,242,0.12); color: var(--blue); }
+  .status-rest { background: rgba(242,201,122,0.12); color: var(--amber); }
+  .status-incomplete { background: rgba(255,255,255,0.06); color: var(--muted); }
+
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin: 1.25rem 0 0.5rem;
+  }
+
+  .section-label:first-of-type { margin-top: 0; }
+
+  .briefing-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .bullet {
+    display: flex;
+    gap: 10px;
+    margin: 4px 0;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .bullet::before {
+    content: '·';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 0.5rem 0;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  .error {
+    color: var(--red);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .empty {
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <p class="header-date" id="dateLabel"></p>
+    <h1 class="header-title">Morning briefing</h1>
+  </div>
+  <button class="refresh-btn" onclick="load()">Refresh</button>
+</header>
+
+<div id="metricsGrid" class="metrics-grid" style="display:none;"></div>
+<div id="briefingCard" class="card" style="display:none;"><div id="briefingContent"></div></div>
+<div id="emptyState" class="empty" style="display:none;">No health data found for today.<br>Check that Health Auto Export has synced.</div>
+
+<script>
+  document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('en-AU', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  function show(id, display) { document.getElementById(id).style.display = display || 'block'; }
+  function hide(id) { document.getElementById(id).style.display = 'none'; }
+
+  function extractMetrics(payload) {
+    const m = { steps: null, heartRate: null, hrv: null, sleep: null, activeEnergy: null };
+    const data = payload.data || payload;
+    const arr = data.metrics || data.Metrics || [];
+    arr.forEach(item => {
+      const n = (item.name || item.Name || '').toLowerCase().replace(/ /g, '_');
+      const vals = item.data || item.Data || [];
+      const last = vals[vals.length - 1];
+      const qty = last ? (last.qty ?? last.value ?? last.Qty) : null;
+      if (n.includes('step')) m.steps = qty;
+      else if (n.includes('heart_rate_variability') || n.includes('hrv')) m.hrv = qty;
+      else if (n.includes('heart_rate')) m.heartRate = qty;
+      else if (n.includes('sleep') && !n.includes('in_bed')) m.sleep = qty;
+      else if (n.includes('active_energy') || n.includes('active_calorie')) m.activeEnergy = qty;
+    });
+    return m;
+  }
+
+  function renderMetrics(payload) {
+    const m = extractMetrics(payload);
+    const defs = [
+      { label: 'Steps', val: m.steps, unit: '', fmt: v => Math.round(v).toLocaleString() },
+      { label: 'Heart rate', val: m.heartRate, unit: 'bpm', fmt: v => Math.round(v) },
+      { label: 'HRV', val: m.hrv, unit: 'ms', fmt: v => Math.round(v) },
+      { label: 'Sleep', val: m.sleep, unit: 'hr', fmt: v => Number(v).toFixed(1) },
+      { label: 'Active energy', val: m.activeEnergy, unit: 'kcal', fmt: v => Math.round(v) },
+    ].filter(d => d.val != null);
+
+    if (!defs.length) return;
+    document.getElementById('metricsGrid').innerHTML = defs.map(d =>
+      `<div class="metric">
+        <p class="metric-label">${d.label}</p>
+        <p class="metric-value">${d.fmt(d.val)}<span class="metric-unit">${d.unit}</span></p>
+      </div>`
+    ).join('');
+    show('metricsGrid', 'grid');
+  }
+
+  function renderBriefing(text) {
+    const statusMatch = text.match(/STATUS:\s*(.+)/i);
+    const status = (statusMatch ? statusMatch[1].trim() : 'Data incomplete').toLowerCase();
+    const badgeClass = status.includes('great') ? 'status-great' : status.includes('good') ? 'status-good' : status.includes('rest') ? 'status-rest' : 'status-incomplete';
+    const badgeLabel = statusMatch ? statusMatch[1].trim() : 'Data incomplete';
+
+    let html = `<span class="status-badge ${badgeClass}">${badgeLabel}</span>`;
+
+    const sections = [
+      { key: 'HIGHLIGHTS', label: 'Highlights' },
+      { key: 'TODAY', label: "Today's focus" },
+      { key: 'WATCH', label: 'Watch' }
+    ];
+
+    let remaining = text.replace(/STATUS:\s*.+/i, '').trim();
+
+    sections.forEach(({ key, label }) => {
+      const regex = new RegExp(`${key}:\\s*([\\s\\S]*?)(?=HIGHLIGHTS:|TODAY:|WATCH:|$)`, 'i');
+      const match = remaining.match(regex);
+      if (!match) return;
+      const content = match[1].trim();
+      html += `<p class="section-label">${label}</p>`;
+      const lines = content.split('\n').filter(l => l.trim());
+      lines.forEach(line => {
+        const clean = line.replace(/^[-*]\s*/, '').trim();
+        if (clean) html += `<div class="bullet">${clean}</div>`;
+      });
+    });
+
+    document.getElementById('briefingContent').innerHTML = html;
+    show('briefingCard');
+  }
+
+  async function load() {
+    hide('metricsGrid');
+    hide('emptyState');
+    show('briefingCard');
+    document.getElementById('briefingContent').innerHTML = '<div class="loading"><div class="spinner"></div>Fetching your health data...</div>';
+
+    try {
+      const res = await fetch('/api/briefing');
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          hide('briefingCard');
+          show('emptyState');
+          return;
+        }
+        throw new Error(data.error || 'Unknown error');
+      }
+
+      renderMetrics(data.payload);
+      renderBriefing(data.briefing);
+    } catch (e) {
+      document.getElementById('briefingContent').innerHTML = `<p class="error">Error: ${e.message}</p>`;
+    }
+  }
+
+  load();
+</script>
+</body>
+</html>
