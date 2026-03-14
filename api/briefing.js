@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'Missing environment variables.', present: { SUPABASE_URL: !!SUPABASE_URL, SUPABASE_ANON_KEY: !!SUPABASE_ANON_KEY, ANTHROPIC_API_KEY: !!ANTHROPIC_API_KEY } });
+    return res.status(500).json({ error: 'Missing environment variables.' });
   }
 
   const today = new Date().toISOString().split('T')[0];
@@ -25,6 +25,8 @@ export default async function handler(req, res) {
   }
 
   if (!record) return res.status(404).json({ error: 'No health data found.' });
+
+  const summary = summarisePayload(record.payload);
 
   const claude = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -45,7 +47,7 @@ TODAY: [one actionable suggestion for today]
 WATCH: [one pattern to note, or "Nothing flagged"]
 
 Be conversational and specific to the numbers. Under 200 words total.`,
-      messages: [{ role: 'user', content: `Health data for ${record.recorded_date}:\n\n${JSON.stringify(record.payload, null, 2)}` }]
+      messages: [{ role: 'user', content: `Health data for ${record.recorded_date}:\n\n${summary}` }]
     })
   });
 
@@ -54,4 +56,31 @@ Be conversational and specific to the numbers. Under 200 words total.`,
   if (!briefing) return res.status(500).json({ error: 'Claude did not return a briefing.', debug: claudeData });
 
   return res.status(200).json({ briefing, date: record.recorded_date, payload: record.payload });
+}
+
+function summarisePayload(payload) {
+  const data = payload.data || payload;
+  const arr = data.metrics || data.Metrics || [];
+  const summary = {};
+
+  arr.forEach(item => {
+    const name = item.name || item.Name || '';
+    const vals = item.data || item.Data || [];
+    if (!vals.length) return;
+
+    const last = vals[vals.length - 1];
+    const qty = last ? (last.qty ?? last.value ?? last.Qty) : null;
+    if (qty != null) summary[name] = qty;
+  });
+
+  const workouts = data.workouts || data.Workouts || [];
+  if (workouts.length) {
+    summary['workouts'] = workouts.slice(-3).map(w => ({
+      type: w.name || w.workoutActivityType || 'Workout',
+      duration: w.duration,
+      calories: w.activeEnergyBurned || w.calories
+    }));
+  }
+
+  return JSON.stringify(summary, null, 2);
 }
