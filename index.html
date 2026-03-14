@@ -20,6 +20,8 @@
     --red: #f27a7a;
     --blue: #7ab8f2;
     --amber: #f2c97a;
+    --user-bubble: #1e2a1e;
+    --assistant-bubble: #1a1b1a;
   }
 
   body {
@@ -31,7 +33,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 3rem 1.5rem 6rem;
+    padding: 3rem 1.5rem 2rem;
   }
 
   header {
@@ -44,20 +46,8 @@
     animation: fadeUp 0.6s ease both;
   }
 
-  .header-date {
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .header-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 28px;
-    font-weight: 400;
-    margin-top: 6px;
-    line-height: 1.2;
-  }
+  .header-date { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .header-title { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; margin-top: 6px; line-height: 1.2; }
 
   .refresh-btn {
     background: none;
@@ -84,34 +74,10 @@
     animation: fadeUp 0.6s 0.1s ease both;
   }
 
-  .metric {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem;
-  }
-
-  .metric-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-
-  .metric-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 26px;
-    line-height: 1;
-    color: var(--text);
-  }
-
-  .metric-unit {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: var(--muted);
-    margin-left: 3px;
-  }
+  .metric { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+  .metric-value { font-family: 'DM Serif Display', serif; font-size: 26px; line-height: 1; color: var(--text); }
+  .metric-unit { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted); margin-left: 3px; }
 
   .card {
     width: 100%;
@@ -124,93 +90,128 @@
     animation: fadeUp 0.6s 0.2s ease both;
   }
 
-  .status-badge {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 1.25rem;
-  }
-
+  .status-badge { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; padding: 4px 12px; border-radius: 20px; margin-bottom: 1.25rem; }
   .status-great { background: var(--accent-dim); color: var(--accent); }
   .status-good { background: rgba(122,184,242,0.12); color: var(--blue); }
   .status-rest { background: rgba(242,201,122,0.12); color: var(--amber); }
   .status-incomplete { background: rgba(255,255,255,0.06); color: var(--muted); }
 
-  .section-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    margin: 1.25rem 0 0.5rem;
-  }
-
+  .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin: 1.25rem 0 0.5rem; }
   .section-label:first-of-type { margin-top: 0; }
 
-  .briefing-text {
-    font-size: 15px;
-    line-height: 1.8;
-    color: var(--text);
-  }
+  .bullet { display: flex; gap: 10px; margin: 4px 0; font-size: 15px; line-height: 1.7; }
+  .bullet::before { content: '·'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
 
-  .bullet {
-    display: flex;
-    gap: 10px;
-    margin: 4px 0;
-    font-size: 15px;
-    line-height: 1.7;
-  }
-
-  .bullet::before {
-    content: '·';
-    color: var(--accent);
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .loading {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--muted);
-    font-size: 14px;
-    padding: 0.5rem 0;
-  }
-
-  .spinner {
-    width: 16px;
-    height: 16px;
-    border: 1.5px solid rgba(255,255,255,0.1);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
-  }
-
-  .error {
-    color: var(--red);
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .empty {
+  .chat-section {
     width: 100%;
     max-width: 640px;
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--muted);
-    font-size: 15px;
+    margin-top: 8px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .chat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+
+  .chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+    min-height: 0;
+  }
+
+  .message {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 14px;
     line-height: 1.7;
-    animation: fadeUp 0.6s ease both;
   }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+  .message-user {
+    align-self: flex-end;
+    background: var(--user-bubble);
+    border: 1px solid rgba(200,242,122,0.15);
+    color: var(--text);
+    border-bottom-right-radius: 4px;
   }
 
+  .message-assistant {
+    align-self: flex-start;
+    background: var(--assistant-bubble);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-bottom-left-radius: 4px;
+  }
+
+  .message-thinking {
+    align-self: flex-start;
+    background: var(--assistant-bubble);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+    padding: 12px 16px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: bounce 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .chat-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    resize: none;
+    outline: none;
+    min-height: 48px;
+    max-height: 120px;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+  }
+
+  .chat-input::placeholder { color: var(--muted); }
+  .chat-input:focus { border-color: rgba(200,242,122,0.3); }
+
+  .send-btn {
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+  }
+
+  .send-btn:hover { opacity: 0.85; }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .send-btn svg { width: 18px; height: 18px; }
+
+  .loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; padding: 0.5rem 0; }
+  .spinner { width: 16px; height: 16px; border: 1.5px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  .error { color: var(--red); font-size: 14px; line-height: 1.6; }
+  .empty { width: 100%; max-width: 640px; text-align: center; padding: 4rem 2rem; color: var(--muted); font-size: 15px; line-height: 1.7; animation: fadeUp 0.6s ease both; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
@@ -221,14 +222,31 @@
     <p class="header-date" id="dateLabel"></p>
     <h1 class="header-title">Morning briefing</h1>
   </div>
-  <button class="refresh-btn" onclick="load()">Refresh</button>
+  <button class="refresh-btn" onclick="loadBriefing()">Refresh</button>
 </header>
 
 <div id="metricsGrid" class="metrics-grid" style="display:none;"></div>
 <div id="briefingCard" class="card" style="display:none;"><div id="briefingContent"></div></div>
 <div id="emptyState" class="empty" style="display:none;">No health data found for today.<br>Check that Health Auto Export has synced.</div>
 
+<div id="chatSection" class="chat-section" style="display:none;">
+  <p class="chat-label">Ask a question</p>
+  <div id="chatMessages" class="chat-messages"></div>
+  <div class="chat-input-row">
+    <textarea id="chatInput" class="chat-input" placeholder="Ask about your health data..." rows="1"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0e0f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <script>
+  let healthSummary = '';
+  let chatHistory = [];
+
   document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('en-AU', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   });
@@ -263,13 +281,9 @@
       { label: 'Sleep', val: m.sleep, unit: 'hr', fmt: v => Number(v).toFixed(1) },
       { label: 'Active energy', val: m.activeEnergy, unit: 'kcal', fmt: v => Math.round(v) },
     ].filter(d => d.val != null);
-
     if (!defs.length) return;
     document.getElementById('metricsGrid').innerHTML = defs.map(d =>
-      `<div class="metric">
-        <p class="metric-label">${d.label}</p>
-        <p class="metric-value">${d.fmt(d.val)}<span class="metric-unit">${d.unit}</span></p>
-      </div>`
+      `<div class="metric"><p class="metric-label">${d.label}</p><p class="metric-value">${d.fmt(d.val)}<span class="metric-unit">${d.unit}</span></p></div>`
     ).join('');
     show('metricsGrid', 'grid');
   }
@@ -279,61 +293,113 @@
     const status = (statusMatch ? statusMatch[1].trim() : 'Data incomplete').toLowerCase();
     const badgeClass = status.includes('great') ? 'status-great' : status.includes('good') ? 'status-good' : status.includes('rest') ? 'status-rest' : 'status-incomplete';
     const badgeLabel = statusMatch ? statusMatch[1].trim() : 'Data incomplete';
-
     let html = `<span class="status-badge ${badgeClass}">${badgeLabel}</span>`;
-
     const sections = [
       { key: 'HIGHLIGHTS', label: 'Highlights' },
       { key: 'TODAY', label: "Today's focus" },
       { key: 'WATCH', label: 'Watch' }
     ];
-
-    let remaining = text.replace(/STATUS:\s*.+/i, '').trim();
-
     sections.forEach(({ key, label }) => {
       const regex = new RegExp(`${key}:\\s*([\\s\\S]*?)(?=HIGHLIGHTS:|TODAY:|WATCH:|$)`, 'i');
-      const match = remaining.match(regex);
+      const match = text.match(regex);
       if (!match) return;
-      const content = match[1].trim();
       html += `<p class="section-label">${label}</p>`;
-      const lines = content.split('\n').filter(l => l.trim());
-      lines.forEach(line => {
+      match[1].trim().split('\n').filter(l => l.trim()).forEach(line => {
         const clean = line.replace(/^[-*]\s*/, '').trim();
         if (clean) html += `<div class="bullet">${clean}</div>`;
       });
     });
-
     document.getElementById('briefingContent').innerHTML = html;
     show('briefingCard');
   }
 
-  async function load() {
+  async function loadBriefing() {
     hide('metricsGrid');
     hide('emptyState');
+    hide('chatSection');
+    chatHistory = [];
+    document.getElementById('chatMessages').innerHTML = '';
     show('briefingCard');
     document.getElementById('briefingContent').innerHTML = '<div class="loading"><div class="spinner"></div>Fetching your health data...</div>';
 
     try {
       const res = await fetch('/api/briefing');
       const data = await res.json();
-
       if (!res.ok) {
-        if (res.status === 404) {
-          hide('briefingCard');
-          show('emptyState');
-          return;
-        }
+        if (res.status === 404) { hide('briefingCard'); show('emptyState'); return; }
         throw new Error(data.error || 'Unknown error');
       }
-
+      healthSummary = JSON.stringify(data.payload).slice(0, 3000);
       renderMetrics(data.payload);
       renderBriefing(data.briefing);
+      show('chatSection');
     } catch (e) {
       document.getElementById('briefingContent').innerHTML = `<p class="error">Error: ${e.message}</p>`;
     }
   }
 
-  load();
+  function addMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = `message message-${role}`;
+    div.textContent = text;
+    document.getElementById('chatMessages').appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    return div;
+  }
+
+  function addThinking() {
+    const div = document.createElement('div');
+    div.className = 'message-thinking';
+    div.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+    document.getElementById('chatMessages').appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    return div;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('sendBtn').disabled = true;
+
+    addMessage('user', text);
+    chatHistory.push({ role: 'user', content: text });
+
+    const thinking = addThinking();
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: chatHistory, healthSummary })
+      });
+      const data = await res.json();
+      thinking.remove();
+      if (!res.ok) throw new Error(data.error || 'Unknown error');
+      addMessage('assistant', data.reply);
+      chatHistory.push({ role: 'assistant', content: data.reply });
+    } catch (e) {
+      thinking.remove();
+      addMessage('assistant', `Error: ${e.message}`);
+    }
+
+    document.getElementById('sendBtn').disabled = false;
+    input.focus();
+  }
+
+  const input = document.getElementById('chatInput');
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  });
+
+  loadBriefing();
 </script>
 </body>
 </html>
